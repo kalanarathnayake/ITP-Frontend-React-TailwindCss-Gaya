@@ -59,7 +59,7 @@ export class CreateMeeting extends Component {
         choice.forEach(participant => {
             participantsArr.push(participant.value);
         })
-        console.log("participantsArr",participantsArr);
+        console.log("participantsArr", participantsArr);
         this.setState({
             participants: participantsArr
         })
@@ -91,6 +91,20 @@ export class CreateMeeting extends Component {
             time: this.state.time,
         }
 
+        //Validations for inputs
+        if (this.state.participants.length < 4) {
+            this.setState({ participantsError: "Add a Full Name to Participants" })
+        }
+        if (this.state.platform.length < 5) {
+            this.setState({ platformError: "Select a platform" })
+        }
+        if (this.state.date.length < 4) {
+            this.setState({ dateError: "date must be set" })
+        }
+        if (this.state.time.length < 4) {
+            this.setState({ timeError: "time must be set" })
+        }
+        
         //checking the submitted dataset (payload checking)
         console.log(meeting);
         axios.post('http://localhost:5000/meeting/add', meeting)
@@ -149,13 +163,13 @@ export class CreateMeeting extends Component {
                                                     value={this.state.platform}
                                                     onChange={this.onChangePlatform}
                                                 >
-                                                    <option>Select Platform</option>
+                                                    <option value={null}>Select Platform</option>
                                                     <option>Zoom</option>
                                                     <option>MS-Teams</option>
                                                     <option>Google Meet</option>
                                                     <option>Other</option>
                                                 </select>
-                                            </div>
+                                            </div><p className="text-red-600 validateMsg">{this.state.platformError}</p>
 
                                             <div className="grid grid-cols-2 gap-4 form-group">
                                                 <div className="form-group">
@@ -167,7 +181,7 @@ export class CreateMeeting extends Component {
                                                             onChange={this.onChangeDate}
                                                         />
                                                     </div>
-                                                </div>
+                                                </div><p className="text-red-600 validateMsg">{this.state.dateError}</p>
 
                                                 <div class="">
                                                     <label className='block mb-2 text-lg font-medium text-gray-900 dark:text-white'>Time : </label>
@@ -178,13 +192,17 @@ export class CreateMeeting extends Component {
                                                         value={this.state.time}
                                                         onChange={this.onChangeTime}
                                                     />
-                                                </div>
+                                                </div><p className="text-red-600 validateMsg">{this.state.timeError}</p>
                                             </div>
 
                                             <div className="form-group ">
                                                 <label className='block mb-2 text-lg font-medium text-gray-900 dark:text-white' for="grid-state">Names : </label>
-                                                <Select options={this.state.options} isMulti onChange={(choice) => this.onChangeParticipants(choice)} /><p />
-                                            </div>
+                                                <Select
+                                                    options={this.state.options}
+                                                    isMulti
+                                                    required
+                                                    onChange={(choice) => this.onChangeParticipants(choice)} /><p />
+                                            </div><p className="text-red-600 validateMsg">{this.state.participantysError}</p>
 
                                             <div className="text-center align-middle form-group">
                                                 <input className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800' type="submit" value="Create Meeting" />
